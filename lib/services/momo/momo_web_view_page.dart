@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import 'package:url_launcher/url_launcher.dart'; 
-import 'package:external_app_launcher/external_app_launcher.dart';
-import 'package:http/http.dart' as http;
 
 class MomoWebViewPage extends StatefulWidget {
   final String url;
@@ -79,7 +77,7 @@ class _WebViewPageState extends State<MomoWebViewPage> {
     final storeUrl = 'https://play.google.com/store/apps/details?id=com.mservice.momotransfer';
     try {
       if(await canLaunchUrl(Uri.parse(url))){
-        await launchUrl(Uri.parse(url));
+        await launchUrl(Uri.parse(url), mode: LaunchMode.externalApplication);
         Navigator.pop(context);
       }else{
         await launchUrl(Uri.parse(storeUrl));

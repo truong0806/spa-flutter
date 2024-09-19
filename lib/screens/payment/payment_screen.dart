@@ -5,12 +5,9 @@ import 'package:booking_system_flutter/screens/wallet/user_wallet_balance_screen
 import 'package:booking_system_flutter/utils/colors.dart';
 import 'package:booking_system_flutter/utils/constant.dart';
 import 'package:booking_system_flutter/utils/extensions/num_extenstions.dart';
-import 'package:booking_system_flutter/screens/booking/booking_detail_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:nb_utils/nb_utils.dart';
-import 'package:http/http.dart' as http;
-import 'dart:convert';
 
 import '../../utils/configs.dart';
 import '../../component/app_common_dialog.dart';
@@ -31,7 +28,6 @@ import '../../services/sadad_services_new.dart';
 import '../../services/stripe_service_new.dart';
 import '../../services/vnpay_service_new.dart';
 import '../../services/momo_service_new.dart';
-import '../../utils/configs.dart';
 import '../../utils/model_keys.dart';
 import '../dashboard/dashboard_screen.dart';
 

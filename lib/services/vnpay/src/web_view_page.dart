@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:webview_flutter/webview_flutter.dart';
-import 'package:url_launcher/url_launcher.dart'; 
-import 'package:external_app_launcher/external_app_launcher.dart';
-import 'package:http/http.dart' as http;
+import 'package:url_launcher/url_launcher.dart';
 
 class WebViewPage extends StatefulWidget {
   final String url;

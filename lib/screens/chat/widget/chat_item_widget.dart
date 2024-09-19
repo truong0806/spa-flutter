@@ -28,7 +28,6 @@ class _ChatItemWidgetState extends State<ChatItemWidget> {
 
   init() async {}
 
-  ///TODO Code incomplete for receiver message deletion feature
   void deleteMessage() async {
     bool? res = await showConfirmDialog(
       context,
