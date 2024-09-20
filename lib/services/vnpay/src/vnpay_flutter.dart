@@ -10,7 +10,7 @@ class VNPAYFlutter {
     required num discount,
     required String txnRef,
     required double amount,
-    bool? isTopUp = false
+    bool? isTopUp
   }) async  {
      var requestBody = {
       "payment_method": "vnpay",
