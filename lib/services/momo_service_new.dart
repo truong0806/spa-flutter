@@ -8,18 +8,20 @@ import 'package:flutter/material.dart';
 class MomoServiceNew {
   late PaymentSetting paymentSetting;
   double totalAmount = 0;
-  num bookingId = 0;
+  num? bookingId = 0;
   num discount = 0;
   String type = "";
   late Function(Map<String, dynamic>) onComplete;
+  bool isTopUp;
 
   MomoServiceNew({
     required this.paymentSetting,
     required this.totalAmount,
     this.discount = 0,
     this.type = "",
-    required this.bookingId,
+    this.bookingId,
     required this.onComplete,
+    this.isTopUp = false
   });
 
   Future<void> momoPay(BuildContext context) async {
@@ -42,6 +44,7 @@ class MomoServiceNew {
       discount: discount,
       txnRef: DateTime.now().millisecondsSinceEpoch.toString(),
       amount: totalAmount,
+      isTopUp: isTopUp
     );
     log('Payment URL: $paymentUrl');
 
@@ -68,7 +71,11 @@ class MomoServiceNew {
         });
       }
     } else {
-      throw Exception('Failed to generate a valid payment URL.');
+       onComplete.call({
+          'transaction_status': '03',
+          'transaction_status_text': 'Payment URL is not valid',
+          'transaction_id': 'unknown',
+        });
     }
 
     } catch (e) {

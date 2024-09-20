@@ -14,11 +14,12 @@ class MOMOFlutter {
   }
 
   Future<String>  generatePaymentUrl({
-    required num bookingId,
+    required num? bookingId,
     required num customerId,
     required num discount,
     required String txnRef,
     required double amount,
+    isTopUp = false
   }) async  {
      var requestBody = {
       "payment_method": "momo",
@@ -34,13 +35,17 @@ class MOMOFlutter {
       "currency_code": "VND",
     };
 
+     if (isTopUp == true) {
+          requestBody["is_top_up"] = true;
+     }
+
      final response = await createMomoPayment(requestBody);
 
     if (response.isNotEmpty) {
       print("responseData::: $response");
-      return response['url'] ?? 'Error: No payment URL returned';
+      return response['url'] ?? '';
     } else {
-      return 'Error: Failed to get payment URL';
+      return '';
     }
   }
 

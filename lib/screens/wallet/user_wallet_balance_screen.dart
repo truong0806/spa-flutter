@@ -11,6 +11,7 @@ import 'package:nb_utils/nb_utils.dart';
 import '../../component/app_common_dialog.dart';
 import '../../component/base_scaffold_widget.dart';
 import '../../component/empty_error_state_widget.dart';
+import '../../component/temporary_dialog.dart';
 import '../../main.dart';
 import '../../model/payment_gateway_response.dart';
 import '../../network/rest_apis.dart';
@@ -23,6 +24,8 @@ import '../../services/phone_pe/phone_pe_service.dart';
 import '../../services/razorpay_service_new.dart';
 import '../../services/sadad_services_new.dart';
 import '../../services/stripe_service_new.dart';
+import '../../services/momo_service_new.dart';
+import '../../services/vnpay_service_new.dart';
 import '../../utils/app_configuration.dart';
 import '../../utils/colors.dart';
 import '../../utils/configs.dart';
@@ -43,7 +46,7 @@ class _UserWalletBalanceScreenState extends State<UserWalletBalanceScreen> {
   TextEditingController walletAmountCont = TextEditingController(text: '0');
   FocusNode walletAmountFocus = FocusNode();
 
-  List<int> defaultAmounts = [150, 200, 500, 1000, 5000, 10000];
+  List<int> defaultAmounts = [50000, 100000, 200000, 500000];
   PaymentSetting? currentPaymentMethod;
 
   @override
@@ -57,6 +60,28 @@ class _UserWalletBalanceScreenState extends State<UserWalletBalanceScreen> {
 
     appStore.setUserWalletAmount();
   }
+
+    Future<void> showTemporaryDialog(BuildContext context, String message) async {
+      showDialog(
+        context: context,
+        barrierDismissible: false, 
+        builder: (BuildContext context) {
+          return AlertDialog(
+            content:  Text(message, style: primaryTextStyle()),
+            actions: <Widget>[
+          TextButton(
+            child: Text('OK'),
+            onPressed: () {
+              Navigator.of(context).pop(); 
+            },
+          ),
+        ],
+          );
+        },
+      );
+
+      await Future.delayed(Duration(seconds: 1));
+    }
 
   void _handleClick() async {
     if (currentPaymentMethod == null) {
@@ -89,6 +114,84 @@ class _UserWalletBalanceScreenState extends State<UserWalletBalanceScreen> {
         },
       );
       razorPayServiceNew.razorPayCheckout();
+    } else if (currentPaymentMethod!.type == PAYMENT_METHOD_VNPAY) {
+      VnpayServiceNew vnpayServiceInstance = VnpayServiceNew(
+        paymentSetting: currentPaymentMethod!,
+        totalAmount: walletAmountCont.text.toDouble(),
+        isTopUp: true,
+        onComplete: (p0) {
+          log(p0);
+          Map req = {
+            "amount": walletAmountCont.text.toDouble(),
+            "transaction_type": PAYMENT_METHOD_RAZOR,
+            "transaction_id": p0['orderId']
+          };
+          String message;
+          String transactionStatus = p0['transaction_status']?.toString() ?? 'unknown'; 
+           print("mess: $transactionStatus");
+                switch (transactionStatus) {
+                case '00':
+                  message = language.paymentSuccess;
+                  walletTopUpApi(request: req);
+                  break;
+                case '01':
+                  message = language.transactionNotCompleted;
+                  showTemporaryDialog(context,message);
+                  break;
+                case '02':
+                  message = language.paymentCancelled;
+                  showTemporaryDialog(context,message);
+                  break;
+                case '03':
+                  message = 'Lỗi tạo link thanh toán';
+                  showTemporaryDialog(context,message);
+                  break;
+                default:
+                  message = language.transactionStatusUnknown;
+                  showTemporaryDialog(context,message);
+        }
+        },
+      );
+
+      vnpayServiceInstance.vnpayPay(context);
+
+    } else if (currentPaymentMethod!.type == PAYMENT_METHOD_MOMO) {
+      MomoServiceNew momoServiceInstance = MomoServiceNew(
+        paymentSetting: currentPaymentMethod!,
+        totalAmount: walletAmountCont.text.toDouble(),
+        isTopUp: true,
+        onComplete: (p0) {
+          log(p0);
+          Map req = {
+            "amount": walletAmountCont.text.toDouble(),
+            "transaction_type": PAYMENT_METHOD_RAZOR,
+            "transaction_id": p0['orderId']
+          };
+          String message;
+          String transactionStatus = p0['transaction_status']?.toString() ?? 'unknown'; 
+           print("mess: $transactionStatus");
+                switch (transactionStatus) {
+                  case '00':
+                    message = language.paymentSuccess;
+                    walletTopUpApi(request: req);
+                    break;
+                  case '01':
+                    message = language.transactionNotCompleted;
+                    showTemporaryDialog(context,message);
+                    break;
+                  case '02':
+                    message = language.paymentCancelled;
+                    showTemporaryDialog(context,message);
+                    break;
+                  default:
+                    message = language.transactionStatusUnknown;
+                    showTemporaryDialog(context,message);
+                }
+        },
+      );
+
+      momoServiceInstance.momoPay(context);
+
     } else if (currentPaymentMethod!.type == PAYMENT_METHOD_FLUTTER_WAVE) {
       FlutterWaveServiceNew flutterWaveServiceNew = FlutterWaveServiceNew();
 
@@ -248,6 +351,10 @@ class _UserWalletBalanceScreenState extends State<UserWalletBalanceScreen> {
       return paystack_logo;
     } else if (value == PAYMENT_METHOD_PHONEPE) {
       return phonepe_logo;
+    } else if (value == PAYMENT_METHOD_VNPAY) {
+      return vnpay_logo;
+    } else if (value == PAYMENT_METHOD_MOMO) {
+      return momo_logo;
     }
 
     return '';

@@ -97,6 +97,8 @@ class Assets {
   static const String iconsPaypalLogo = 'assets/icons/paypal_logo.png';
   static const String iconsPaystackLogo = 'assets/icons/paystack_logo.png';
   static const String iconsPhonepeLogo = 'assets/icons/phonepe_logo.png';
+  static const String iconsVNPAYLogo = 'assets/icons/vnpay_logo.png';
+  static const String iconsMomoLogo = 'assets/icons/momo_logo.png';
   static const String iconsRazorpayLogo = 'assets/icons/razorpay_logo.png';
   static const String iconsStripeLogo = 'assets/icons/stripe_logo.png';
   static const String imagesAboutUsPage = 'assets/images/about_us_page.png';

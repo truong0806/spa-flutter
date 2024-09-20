@@ -1324,6 +1324,9 @@ class LanguageAr extends BaseLanguage {
   String get proceedToTopUp => 'انتقل إلى أعلى';
 
   @override
+  String get errorCreatingPaymentLink => 'Error creating payment link';
+
+  @override
   String get serviceAddedToFavourite => 'تمت إضافة الخدمة إلى القائمة المفضلة';
 
   @override

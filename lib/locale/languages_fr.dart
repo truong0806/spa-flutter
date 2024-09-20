@@ -15,6 +15,9 @@ class LanguageFr extends BaseLanguage {
   String get transactionNotCompleted => 'Giao dịch chưa hoàn thành';
   
   @override
+  String get errorCreatingPaymentLink => 'Error creating payment link';
+
+  @override
   String get transactionStatusUnknown => 'Trạng thái giao dịch không rõ';
 
   @override

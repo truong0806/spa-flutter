@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:booking_system_flutter/services/vnpay/src/web_view_page.dart';
 import 'package:nb_utils/nb_utils.dart';
 import './vnpay/vnpay_flutter.dart';
@@ -10,18 +8,20 @@ import 'package:flutter/material.dart';
 class VnpayServiceNew {
   late PaymentSetting paymentSetting;
   double totalAmount = 0;
-  num bookingId = 0;
+  num? bookingId = 0;
   num discount = 0;
   String type = "";
   late Function(Map<String, dynamic>) onComplete;
+  bool isTopUp; 
 
   VnpayServiceNew({
     required PaymentSetting paymentSetting,
     required double totalAmount,
     num discount  = 0,
     type = "",
-    required bookingId,
+    this.bookingId,
     required Function(Map<String, dynamic>) onComplete,
+    this.isTopUp = false,
   }) {
     this.paymentSetting = paymentSetting;
     this.totalAmount = totalAmount;
@@ -35,7 +35,6 @@ class VnpayServiceNew {
   String vnpayPaymentKey = '';
   String vnpayURL = '';
   String vnpayPaymentPublishKey = '';
-  String vnp_OrderInfo = '';
   
   if (paymentSetting.isTest == 1) {
     vnpayPaymentKey = paymentSetting.testValue!.vnpayKey.validate();
@@ -51,8 +50,6 @@ class VnpayServiceNew {
     throw Exception('Payment configuration is incomplete. Contact your admin.');
   }
   
-  vnp_OrderInfo = 'Thanh toan don hang ${bookingId} ${appStore.userFullName} ${totalAmount} ${discount} ${type}';
-  
   num customerId = appStore.userId;
   
   try {
@@ -62,6 +59,7 @@ class VnpayServiceNew {
       discount: discount,
       txnRef: DateTime.now().millisecondsSinceEpoch.toString(),
       amount: totalAmount,
+      isTopUp: isTopUp
     );
 
     log('Payment URL: $paymentUrl');
@@ -83,7 +81,6 @@ class VnpayServiceNew {
         'transaction_id': transactionId,
       });
       } else {
-        // Handle unexpected result type
         onComplete.call({
           'transaction_status': 'unknown',
           'transaction_status_text': 'unknown',
@@ -91,7 +88,11 @@ class VnpayServiceNew {
         });
       }
     } else {
-      throw Exception('Failed to generate a valid payment URL.');
+        onComplete.call({
+          'transaction_status': '03',
+          'transaction_status_text': 'Payment URL is not valid',
+          'transaction_id': 'unknown',
+        });
     }
   } catch (e) {
     log('Error generating payment URL: $e');
