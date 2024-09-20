@@ -43,6 +43,10 @@ class _WebViewPageState extends State<MomoWebViewPage> {
               _handleIntentUrl(request.url);
               return NavigationDecision.prevent;
             }
+            if (request.url.startsWith('market://')) {
+              _handleIntentUrl(request.url, toStore: true);
+              return NavigationDecision.prevent;
+            }
 
             if (request.url.contains('/save-payment-momo')) {
               Uri uri = Uri.parse(request.url);
@@ -74,23 +78,25 @@ class _WebViewPageState extends State<MomoWebViewPage> {
       ..loadRequest(Uri.parse(widget.url));
   }
 
-  Future<void> _handleIntentUrl(String url) async {
-    final storeUrl = 'https://play.google.com/store/apps/details?id=com.mservice.momotransfer';
-    try {
-      if(await canLaunchUrl(Uri.parse(url))){
-        await launchUrl(Uri.parse(url), mode: LaunchMode.externalApplication);
-        Navigator.pop(context);
-      }else{
-        await launchUrl(Uri.parse(storeUrl));
-        Navigator.pop(context);
-      }
-    } catch (e) {
-      print('Error: $e'); 
-      setState(() {
-        errorMessage = 'Error: $e';
-      });
+  Future<void> _handleIntentUrl(String url, {bool toStore = false}) async {
+  final storeUrl = 'https://play.google.com/store/apps/details?id=com.mservice.momotransfer';
+  try {
+    if (toStore) {
+      await launchUrl(Uri.parse(storeUrl), mode: LaunchMode.externalApplication);
+    } else if (await canLaunchUrl(Uri.parse(url))) {
+      await launchUrl(Uri.parse(url), mode: LaunchMode.externalApplication);
+    } else {
+      await launchUrl(Uri.parse(storeUrl), mode: LaunchMode.externalApplication);
     }
+    Navigator.pop(context); 
+  } catch (e) {
+    print('Error: $e');
+    setState(() {
+      errorMessage = 'Error: $e';
+    });
   }
+}
+
 
 
 

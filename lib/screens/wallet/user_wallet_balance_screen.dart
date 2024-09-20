@@ -171,15 +171,15 @@ class _UserWalletBalanceScreenState extends State<UserWalletBalanceScreen> {
           String transactionStatus = p0['transaction_status']?.toString() ?? 'unknown'; 
            print("mess: $transactionStatus");
                 switch (transactionStatus) {
-                  case '00':
+                  case '0':
                     message = language.paymentSuccess;
                     walletTopUpApi(request: req);
                     break;
-                  case '01':
-                    message = language.transactionNotCompleted;
+                  case '1002':
+                    message = 'Giao dịch vị từ chối';
                     showTemporaryDialog(context,message);
                     break;
-                  case '02':
+                  case '2':
                     message = language.paymentCancelled;
                     showTemporaryDialog(context,message);
                     break;

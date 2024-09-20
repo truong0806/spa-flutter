@@ -19,7 +19,7 @@ class MOMOFlutter {
     required num discount,
     required String txnRef,
     required double amount,
-    isTopUp = false
+    isTopUp
   }) async  {
      var requestBody = {
       "payment_method": "momo",
@@ -28,7 +28,7 @@ class MOMOFlutter {
       "discount": discount,
       "payment_type": "momo",
       "total_amount": amount,
-      "is_mobile": 1,
+      "is_mobile": true,
       "type": "advance_payment",
       "datetime": DateTime.now().toIso8601String(),
       "payment_status": "failed",

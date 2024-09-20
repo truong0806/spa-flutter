@@ -19,7 +19,7 @@ class VNPAYFlutter {
       "discount": discount,
       "payment_type": "vnpay",
       "total_amount": amount,
-      "is_mobile": 1,
+      "is_mobile": true,
       "type": "advance_payment",
       "datetime": DateTime.now().toIso8601String(),
       "payment_status": "failed",
