@@ -1,5 +1,34 @@
 workflows:
-  sample-workflow:
-    name: Codemagic Sample Workflow
-    max_build_duration: 120
-    instance_type: mac_mini_m2
+  ios-workflow:
+    name: iOS Workflow
+    max_build_duration: 60
+    environment:
+      flutter: stable
+      xcode: latest
+      cocoapods: default
+      vars:
+        FLUTTER_VERSION: 3.0.0
+    triggering:
+      events:
+        - push
+        - pull_request
+    scripts:
+      - name: Install dependencies
+        script: |
+          flutter pub get
+          cd ios
+          pod install
+          cd ..
+
+      - name: Build iOS app
+        script: |
+          flutter build ios --release --no-codesign
+
+    artifacts:
+      - build/ios/iphoneos/*.ipa
+
+    publishing:
+      scripts:
+        - name: Upload to App Store Connect
+          script: |
+            # Use Codemagic CLI tools or fastlane for App Store deployment
