@@ -5,12 +5,9 @@ import 'package:booking_system_flutter/screens/wallet/user_wallet_balance_screen
 import 'package:booking_system_flutter/utils/colors.dart';
 import 'package:booking_system_flutter/utils/constant.dart';
 import 'package:booking_system_flutter/utils/extensions/num_extenstions.dart';
-import 'package:booking_system_flutter/screens/booking/booking_detail_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:nb_utils/nb_utils.dart';
-import 'package:http/http.dart' as http;
-import 'dart:convert';
 
 import '../../utils/configs.dart';
 import '../../component/app_common_dialog.dart';
@@ -31,7 +28,6 @@ import '../../services/sadad_services_new.dart';
 import '../../services/stripe_service_new.dart';
 import '../../services/vnpay_service_new.dart';
 import '../../services/momo_service_new.dart';
-import '../../utils/configs.dart';
 import '../../utils/model_keys.dart';
 import '../dashboard/dashboard_screen.dart';
 
@@ -109,7 +105,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
       );
 
       stripeServiceNew.stripePay();
-    } else if (currentPaymentMethod!.type == PAYMENT_METHOB_VNPAY) {
+    } else if (currentPaymentMethod!.type == PAYMENT_METHOD_VNPAY) {
       var discount = widget.bookings.service!.discount ?? 0;
       // num walletBalance = await getUserWalletBalance();
       num bookingId = widget.bookings.bookingDetail != null ? widget.bookings.bookingDetail!.id.validate() : 0;
@@ -124,7 +120,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
       //   "total_amount": totalAmount,
       //   "type": "advance_payment"
       // });
-      VnpayServiceNew vnpayServiceNew = VnpayServiceNew(
+      VnpayServiceNew vnpayServiceNew = await VnpayServiceNew(
         paymentSetting: currentPaymentMethod!,
         totalAmount: totalAmount.toDouble(),
         type: type,
@@ -138,7 +134,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
                   case '00':
                     message = language.paymentSuccess;
                     savePay(
-                      paymentMethod: PAYMENT_METHOB_VNPAY,
+                      paymentMethod: PAYMENT_METHOD_VNPAY,
                       paymentStatus: widget.isForAdvancePayment ? SERVICE_PAYMENT_STATUS_ADVANCE_PAID : SERVICE_PAYMENT_STATUS_PAID,
                       ortherDetail: message,
                       txnId: p0['transaction_id'],
@@ -152,6 +148,10 @@ class _PaymentScreenState extends State<PaymentScreen> {
                     message = language.paymentCancelled;
                     showTemporaryDialog(context, message);
                     break;
+                  case '03':
+                    message = 'Lỗi tạo link thanh toán';
+                    showTemporaryDialog(context,message);
+                    break;
                   default:
                     message = language.transactionStatusUnknown;
                     showTemporaryDialog(context, message);
@@ -164,7 +164,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
       
       
 
-    } else if (currentPaymentMethod!.type == PAYMENT_METHOB_MOMO) {
+    } else if (currentPaymentMethod!.type == PAYMENT_METHOD_MOMO) {
       var discount = widget.bookings.service!.discount ?? 0;
       num bookingId = widget.bookings.bookingDetail != null ? widget.bookings.bookingDetail!.id.validate() : 0;
       MomoServiceNew momoServiceNew = MomoServiceNew(
@@ -181,7 +181,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
                   case '0':
                     message = language.paymentSuccess;
                     savePay(
-                      paymentMethod: PAYMENT_METHOB_MOMO,
+                      paymentMethod: PAYMENT_METHOD_MOMO,
                       paymentStatus: widget.isForAdvancePayment ? SERVICE_PAYMENT_STATUS_ADVANCE_PAID : SERVICE_PAYMENT_STATUS_PAID,
                       ortherDetail: message,
                       txnId: p0['transaction_id'],
@@ -194,6 +194,10 @@ class _PaymentScreenState extends State<PaymentScreen> {
                   case '02':
                     message = language.paymentCancelled;
                     showTemporaryDialog(context, message);
+                    break;
+                  case '03':
+                    message = 'Lỗi tạo link thanh toán';
+                    showTemporaryDialog(context,message);
                     break;
                   default:
                     message = language.transactionStatusUnknown;

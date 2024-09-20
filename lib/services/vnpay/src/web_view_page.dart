@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:nb_utils/nb_utils.dart';
 import 'package:webview_flutter/webview_flutter.dart';
-import 'package:url_launcher/url_launcher.dart'; 
-import 'package:external_app_launcher/external_app_launcher.dart';
-import 'package:http/http.dart' as http;
-
+import 'package:url_launcher/url_launcher.dart';
 class WebViewPage extends StatefulWidget {
   final String url;
   
@@ -103,18 +101,55 @@ class _WebViewPageState extends State<WebViewPage> {
       body: SafeArea(
         child: Stack(
           children: [
+            if (errorMessage == null) 
             WebViewWidget(controller: controller),
-            if (isLoading)
-              const Center(
-                child: CircularProgressIndicator(),
-              ),
+          if (isLoading && errorMessage == null) 
+           const Center(
+              child: CircularProgressIndicator(),
+            ),
             if (errorMessage != null)
-              Center(
-                child: Text(
-                  errorMessage!,
-                  style: const TextStyle(color: Colors.red),
-                ),
+            Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+        
+                children: [
+                  Icon(
+                    Icons.error_outline,
+                    color: Colors.red,
+                    size: 80,
+                  ),
+                  const SizedBox(height: 20),
+                  Text(
+                    "Oops! Có lỗi xảy ra",
+                    style: TextStyle(
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.red,
+                    ),
+                  ),
+                  const SizedBox(height: 10),
+                  Text(
+                    errorMessage!,
+                    textAlign: TextAlign.center,
+                    style: primaryTextStyle()
+                  ),
+                  const SizedBox(height: 30),
+                  ElevatedButton.icon(
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                    icon: Icon(Icons.arrow_back),
+                    label: Text("Quay lại",style: secondaryTextStyle(), ),
+                    style: ElevatedButton.styleFrom(
+                      padding: EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                      backgroundColor: Colors.white,
+                    ),
+                  ),
+                ],
               ),
+            ),
+
           ],
           
         ),

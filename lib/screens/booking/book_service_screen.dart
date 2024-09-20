@@ -140,7 +140,7 @@ class _BookServiceScreenState extends State<BookServiceScreen> {
 
       toast(language.youCannotApplyThisCoupon);
     } else {
-      advancePaymentAmount = (bookingAmountModel.finalGrandTotalAmount * (widget.data.serviceDetail!.advancePaymentPercentage.validate() / 100).toStringAsFixed(appConfigurationStore.priceDecimalPoint).toDouble());
+      advancePaymentAmount = (bookingAmountModel.finalGrandTotalAmount * (widget.data.serviceDetail!.advancePaymentPercentage.validate() / 100)).toStringAsFixed(appConfigurationStore.priceDecimalPoint).toDouble();
     }
     setState(() {});
   }

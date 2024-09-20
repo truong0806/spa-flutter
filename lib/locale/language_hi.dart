@@ -13,6 +13,9 @@ class LanguageHi extends BaseLanguage {
   String get paymentCancelled => 'Giao dịch bị hủy';
 
   @override
+  String get errorCreatingPaymentLink => 'Error creating payment link';
+
+  @override
   String get transactionNotCompleted => 'Giao dịch chưa hoàn thành';
   
   @override

@@ -29,6 +29,8 @@ abstract class BaseLanguage {
 
   String get hintReenterPasswordTxt;
 
+  String get errorCreatingPaymentLink;
+
   String get confirm;
 
   String get hintEmailTxt;

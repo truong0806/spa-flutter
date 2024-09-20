@@ -1157,6 +1157,9 @@ class LanguageEn extends BaseLanguage {
   String get advancePayAmount => 'Advance Amount';
 
   @override
+  String get errorCreatingPaymentLink => 'Error creating payment link';
+
+  @override
   String get remainingAmount => 'Remaining Amount';
 
   @override

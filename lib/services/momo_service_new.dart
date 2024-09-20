@@ -1,35 +1,27 @@
-import 'dart:convert';
-
 import 'package:booking_system_flutter/services/momo/momo_web_view_page.dart';
-import 'package:http/http.dart' as http;
-import 'package:http/http.dart';
 import 'package:nb_utils/nb_utils.dart';
 import './momo/momo_flutter.dart';
 import '../../main.dart';
 import '../model/payment_gateway_response.dart';
-import '../network/network_utils.dart';
-import '../utils/colors.dart';
-import '../utils/common.dart';
-import '../utils/configs.dart';
-import 'package:network_info_plus/network_info_plus.dart';
 import 'package:flutter/material.dart';
-import 'package:webview_flutter/webview_flutter.dart' as webview;
 
 class MomoServiceNew {
   late PaymentSetting paymentSetting;
   double totalAmount = 0;
-  num bookingId = 0;
+  num? bookingId = 0;
   num discount = 0;
   String type = "";
   late Function(Map<String, dynamic>) onComplete;
+  bool isTopUp;
 
   MomoServiceNew({
     required this.paymentSetting,
     required this.totalAmount,
     this.discount = 0,
     this.type = "",
-    required this.bookingId,
+    this.bookingId,
     required this.onComplete,
+    this.isTopUp = false
   });
 
   Future<void> momoPay(BuildContext context) async {
@@ -52,6 +44,7 @@ class MomoServiceNew {
       discount: discount,
       txnRef: DateTime.now().millisecondsSinceEpoch.toString(),
       amount: totalAmount,
+      isTopUp: isTopUp
     );
     log('Payment URL: $paymentUrl');
 
@@ -78,7 +71,11 @@ class MomoServiceNew {
         });
       }
     } else {
-      throw Exception('Failed to generate a valid payment URL.');
+       onComplete.call({
+          'transaction_status': '03',
+          'transaction_status_text': 'Payment URL is not valid',
+          'transaction_id': 'unknown',
+        });
     }
 
     } catch (e) {

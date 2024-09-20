@@ -78,7 +78,7 @@ class MapScreenState extends State<MapScreen> {
   Future<void> setAddress() async {
     try {
       Position position = await getUserLocationPosition().catchError((e) {
-        //
+        
       });
 
       _currentAddress = await buildFullAddressFromLatLong(position.latitude, position.longitude).catchError((e) {

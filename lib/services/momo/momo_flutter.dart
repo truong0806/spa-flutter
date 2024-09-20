@@ -1,12 +1,4 @@
-import 'dart:convert';
 import 'package:booking_system_flutter/network/rest_apis.dart';
-import 'package:crypto/crypto.dart';
-import 'package:flutter/foundation.dart';
-import 'package:flutter_webview_plugin/flutter_webview_plugin.dart';
-import 'package:intl/intl.dart';
-import 'package:url_launcher/url_launcher_string.dart';
-import 'dart:convert';
-import 'package:http/http.dart' as http;
 
 
 class MOMOFlutter {
@@ -22,11 +14,12 @@ class MOMOFlutter {
   }
 
   Future<String>  generatePaymentUrl({
-    required num bookingId,
+    required num? bookingId,
     required num customerId,
     required num discount,
     required String txnRef,
     required double amount,
+    isTopUp
   }) async  {
      var requestBody = {
       "payment_method": "momo",
@@ -35,20 +28,24 @@ class MOMOFlutter {
       "discount": discount,
       "payment_type": "momo",
       "total_amount": amount,
-      "is_mobile": 1,
+      "is_mobile": true,
       "type": "advance_payment",
       "datetime": DateTime.now().toIso8601String(),
       "payment_status": "failed",
       "currency_code": "VND",
     };
 
+     if (isTopUp == true) {
+          requestBody["is_top_up"] = true;
+     }
+
      final response = await createMomoPayment(requestBody);
 
     if (response.isNotEmpty) {
       print("responseData::: $response");
-      return response['url'] ?? 'Error: No payment URL returned';
+      return response['url'] ?? '';
     } else {
-      return 'Error: Failed to get payment URL';
+      return '';
     }
   }
 

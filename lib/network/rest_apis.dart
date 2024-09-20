@@ -348,6 +348,7 @@ Future<Map<String, dynamic>> postPaymentMethod(Map<String, dynamic> payload) asy
 Future<Map<String, dynamic>> createVnpayPayment(Map<String, dynamic> payload) async {
   try {
     final response = await buildHttpResponse('create-vnpay-payment', request: payload, method: HttpMethodType.POST);
+    print('data::: $response');
     final data = await handleResponse(response);
     return data;
   } catch (e) {

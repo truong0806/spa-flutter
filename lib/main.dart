@@ -1,6 +1,5 @@
 import 'package:booking_system_flutter/app_theme.dart';
 import 'package:booking_system_flutter/locale/app_localizations.dart';
-import 'package:booking_system_flutter/locale/language_en.dart';
 import 'package:booking_system_flutter/locale/language_vi.dart';
 import 'package:booking_system_flutter/locale/languages.dart';
 import 'package:booking_system_flutter/model/booking_detail_model.dart';
